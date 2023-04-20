@@ -1,0 +1,41 @@
+---
+title: "ProyectoTD2023"
+author: "Jose Garcia Mora, etc"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+# Define la ruta al directorio donde se encuentran los registros
+ruta <- "data/0519xxxiii14/06_02_2023/14.20.34/"
+
+# Lee los archivos binarios
+
+read.filename <- file(paste0(ruta, "cabecera_FicheroAnalogico.dat"), "rb")
+cabecera_analogico <- readBin(read.filename, 
+                              integer(), size = 1, n = 200, endian = "little")
+
+read.filename <- file(paste0(ruta, "FicheroAnalogico.dat"), "rb")
+fichero_analogico <- readBin(read.filename, 
+                             integer(), size = 2, n = 200, endian = "little")
+
+read.filename <- file(paste0(ruta, "cabecera_FicheroDigital.dat"), "rb")
+cabecera_digital <- readBin(read.filename, 
+                            integer(), size = 1, n = 200, endian = "little")
+
+read.filename <- file(paste0(ruta, "FicheroDigital.dat"), "rb")
+fichero_digital <- readBin(read.filename, 
+                           integer(), size = 1, n = 200, endian = "little")
+
+# Muestra los primeros valores de cada archivo
+head(cabecera_analogico)
+head(fichero_analogico)
+head(cabecera_digital)
+head(fichero_digital)
+
+```
+
