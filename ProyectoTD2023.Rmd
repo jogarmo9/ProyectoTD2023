@@ -10,148 +10,113 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r}
-# CABECERA DIGITAL:
-# 6 datos (uint8_t) con fecha: dia,mes,año,hora,min,seg
-# 2 datos (uint8_t) FM = 4HZ, CANALES = 9
-ruta <- "data/1059xlxveei79_ECGf2/27_09_2022/14.42.29_III_ECGyEXTyRESTO/"
-ficheroA <- paste0(ruta, "cabecera_FicheroDigital.DAT")
-A <- readBin(con = ficheroA, what = "integer", n = 8, size = 1, signed = FALSE)
-print(A)
-# plot(A, type = "b") # muestra el gráfico de los datos
-
-```
-
-```{r}
-library(ggplot2)
-ruta <- "data/1059xlxveei79_ECGf2/27_09_2022/14.42.29_III_ECGyEXTyRESTO/"
-ficheroB <- paste0(ruta, "ficheroDigital.DAT")
-A <- readBin(con = ficheroB, what = "integer", n = 2000000, size = 1, signed = FALSE)
-
-HR1 <- A[seq(from = 1, to = length(A), by = 9)]
-HR2 <- A[seq(from = 2, to = length(A), by = 9)]
-MHR <- A[seq(from = 3, to = length(A), by = 9)]
-TOCO <- A[seq(from = 4, to = length(A), by = 9)]
-MSpO2 <- A[seq(from = 5, to = length(A), by = 9)]
-VCP <- A[seq(from = 6, to = length(A), by = 9)]
-Psistolica <- A[seq(from = 7, to = length(A), by = 9)]
-Pdiastolica <- A[seq(from = 8, to = length(A), by = 9)]
-Pmedia <- A[seq(from = 9, to = length(A), by = 9)]
-
-mediaVCP <- mean(VCP) # cálculo de la media de la VCP
-
-# Almacenar las variables en una lista
-df_list <- list(HR1, HR2, MHR, TOCO, MSpO2, VCP, Psistolica, Pdiastolica, Pmedia)
-
-# Calcular el número máximo de filas
-max_filas <- max(sapply(df_list, length))
-
-# Recorrer cada vector en la lista
-for (i in 1:length(df_list)) {
-  # Obtener el vector actual
-  vector_actual <- df_list[[i]]
-  # Calcular la mediana del vector
-  mediana_actual <- median(vector_actual)
+datos <- function(ruta){
+###### cabecera digital ######
+  ficheroCD <- paste0(ruta, "cabecera_FicheroDigital.DAT")
+  cabecera_digital <- readBin(con = ficheroCD, what = "integer", n = 8, size = 1, signed = FALSE)
   
-  # Comprobar si el vector necesita relleno
-  if (length(vector_actual) < max_filas) {
-    # Calcular el número de filas a rellenar
-    filas_relleno <- max_filas - length(vector_actual)
+###### fichero digital ######
+  ficheroB <- paste0(ruta, "ficheroDigital.DAT")
+  datos_digitales <- readBin(con = ficheroB, what = "integer", n = 2000000, size = 1, signed = FALSE)
+  
+  HR1 <- datos_digitales[seq(from = 1, to = length(datos_digitales), by = 9)]
+  HR2 <- datos_digitales[seq(from = 2, to = length(datos_digitales), by = 9)]
+  MHR <- datos_digitales[seq(from = 3, to = length(datos_digitales), by = 9)]
+  TOCO <- datos_digitales[seq(from = 4, to = length(datos_digitales), by = 9)]
+  MSpO2 <- datos_digitales[seq(from = 5, to = length(datos_digitales), by = 9)]
+  VCP <- datos_digitales[seq(from = 6, to = length(datos_digitales), by = 9)]
+  Psistolica <- datos_digitales[seq(from = 7, to = length(datos_digitales), by = 9)]
+  Pdiastolica <- datos_digitales[seq(from = 8, to = length(datos_digitales), by = 9)]
+  Pmedia <- datos_digitales[seq(from = 9, to = length(datos_digitales), by = 9)]
+  
+  mediaVCP <- mean(VCP) # cálculo de la media de la VCP
+  
+  # Almacenar las variables en una lista
+  df_list <- list(HR1, HR2, MHR, TOCO, MSpO2, VCP, Psistolica, Pdiastolica, Pmedia)
+  
+  # Calcular el número máximo de filas
+  max_filas <- max(sapply(df_list, length))
+  
+  # Recorrer cada vector en la lista
+  for (i in 1:length(df_list)) {
+    # Obtener el vector actual
+    vector_actual <- df_list[[i]]
+    # Calcular la mediana del vector
+    mediana_actual <- median(vector_actual)
     
-    # Rellenar el vector con la mediana
-    vector_relleno <- rep(mediana_actual, filas_relleno)
-    
-    # Concatenar el vector original y el vector de relleno
-    df_list[[i]] <- c(vector_actual, vector_relleno)
+    # Comprobar si el vector necesita relleno
+    if (length(vector_actual) < max_filas) {
+      # Calcular el número de filas a rellenar
+      filas_relleno <- max_filas - length(vector_actual)
+      
+      # Rellenar el vector con la mediana
+      vector_relleno <- rep(mediana_actual, filas_relleno)
+      
+      # Concatenar el vector original y el vector de relleno
+      df_list[[i]] <- c(vector_actual, vector_relleno)
+    }
   }
+  
+  # Convertir la lista en un data frame
+  datos_digitales <- as.data.frame(df_list)
+  
+  # Renombrar las columnas del data frame
+  colnames(datos_digitales) <- c("HR1", "HR2", "MHR", "TOCO", "MSpO2", "VCP", "Psistolica", "Pdiastolica", "Pmedia")
+  
+  # Crea la variable tiempo
+  tiempo <- seq(0, length.out = nrow(datos_digitales), by = 0.025)
+  # Selecciona las primeras 2604 filas de tiempo
+  tiempo <- head(tiempo, nrow(datos_digitales))
+  
+  # Añade la variable tiempo al data frame
+  datos_digitales <- datos_digitales %>%
+    mutate(tiempo = tiempo)
+  
+  # tiempo de registro
+  hora <- ((((length(datos_digitales) / 9) / 4) / 60) / 60)
+  min <- ((hora - floor(hora)) * 60)
+  seg <- ((min - floor(min))) * 60
+  
+  tiempo_digital <- cbind(hora, min, seg)
+  
+  
+###### cabecera analogica ######
+  ficheroCA <- paste0(ruta, 'cabecera_FicheroAnalogico.DAT')
+  f2 <- file(ficheroCA, 'rb')
+  Cabecera_A1 <- readBin(f2, "integer", n=7, size=1, signed=FALSE)
+  Cabecera_A2 <- readBin(f2, "integer", n=3, size=2, signed=TRUE)
+  close(f1)
+  
+###### fichero analógico ######
+  fichero <- paste0(ruta, 'ficheroAnalogico.DAT')
+  f2 <- file(fichero, 'rb')
+  datos_analogicos <- readBin(f2, "integer", n=20000000, size=2, signed=TRUE)
+  close(f2)
+  
+  # Calcular el vector de tiempo t
+  Fm <- 1000
+  t <- seq(from = 0, to = (length(datos_analogicos)-1)/Fm, by = 1/Fm)
+  
+  # Crear el data.frame de los datos
+  datos_analogicos <- data.frame(t, datos_analogicos)
+  
+  # Tiempo de registro
+  hora <- ((length(datos_analogicos)/Fm)/60)/60
+  min <- ((hora - floor(hora)) * 60)
+  seg <- ((min - floor(min)) * 60)
+  
+  tiempo_analogico <- cbind(hora, min, seg)
+  
+  dfs <- list(datos_digitales, tiempo_digital,datos_analogicos, tiempo_analogico)
+  vectores <- list(cabecera_digital, Cabecera_A1, Cabecera_A2)
+  return(list(dfs, vectores))
 }
 
-# Convertir la lista en un data frame
-df <- as.data.frame(df_list)
 
-# Renombrar las columnas del data frame
-colnames(df) <- c("HR1", "HR2", "MHR", "TOCO", "MSpO2", "VCP", "Psistolica", "Pdiastolica", "Pmedia")
-
-# Ver el data frame
-print(df)
-
-# tiempo de registro
-hora <- ((((length(A) / 9) / 4) / 60) / 60)
-min <- ((hora - floor(hora)) * 60)
-seg <- ((min - floor(min))) * 60
-
-
-ggplot(df, aes(HR1))+
-  geom_line()
-
-
-
-# texto informativo
-sprintf("Tiempo de registro: %d horas, %d minutos y %d segundos Variabilidad media: %f milisegundos",
-        floor(hora), floor(min), floor(seg), mediaVCP)
-
-```
-
-```{r}
-library(ggplot2)
-# Script de la cabecera del fichero analógico
 ruta <- "data/1059xlxveei79_ECGf2/27_09_2022/14.42.29_III_ECGyEXTyRESTO/"
-# Script de la cabecera del fichero analógico
-ficheroA <- paste0(ruta, 'cabecera_FicheroAnalogico.DAT')
-f1 <- file(ficheroA, 'rb')
-# LEYENDA CABECERA ANALOGICA:
-# Siguiente orden:
-# 6 datos (uint8_t) con fecha: dia, mes, año, hora, min, seg
-# 1 datos (uint8_t) del ADC: resolucion (bits)
-# 3 datos (int16_t): vmaxADC(mv), vminADC(vm), Fmuestreo(Hz)
-# ANALOGICA
-# f1 <- file(ficheroA, 'rb')
-A <- readBin(f1, "integer", n=7, size=1, signed=FALSE)
-B <- readBin(f1, "integer", n=3, size=2, signed=TRUE)
-close(f1)
+data <- datos(ruta)
 
-# Script del fichero analógico
-
-ficheroA <- paste0(ruta, 'ficheroAnalogico.DAT')
-f1 <- file(ficheroA, 'rb')
-A <- readBin(f1, "integer", n=20000000, size=2, signed=TRUE)
-close(f1)
-
-# Calcular el vector de tiempo t
-Fm <- 1000
-t <- seq(from = 0, to = (length(A)-1)/Fm, by = 1/Fm)
-
-# Crear el data.frame de los datos
-df <- data.frame(t, A)
-
-# Crear el gráfico
-ggplot(df, aes(x = t, y = A)) +
-  geom_line(color = "black") +
-  labs(x = "Tiempo (s)", y = "Voltaje (mV)", 
-       title = "Señal analógica") +
-  theme_minimal()
-vmax <- max(A)
-
-
-# Crear el data.frame de los datos
-df2 <- data.frame(t, A)
-
-# Filtrar solo los datos de los últimos 10 segundos
-df_last_10s <- subset(df2, t > max(t)-10)
-
-# Crear el gráfico
-ggplot(df_last_10s, aes(x = t, y = A)) +
-  geom_line(color = "black") +
-  labs(x = "Tiempo (s)", y = "Voltaje (mV)", 
-       title = "Señal analógica (últimos 10 segundos)") +
-  theme_minimal()
-
-# Tiempo de registro
-hora <- ((length(A)/Fm)/60)/60
-min <- ((hora - floor(hora)) * 60)
-seg <- ((min - floor(min)) * 60)
-
-# Texto informativo
-cat(sprintf('Tiempo de registro: %d horas, %d minutos y %d segundos \nFrecuencia de muestreo: %i Hz \nVoltaje máximo: %d miliVoltios', floor(hora), floor(min), floor(seg), Fm, vmax))
-
+datos_digitales <- data[[1]][1]
+head(datos_digitales)
 ```
 
