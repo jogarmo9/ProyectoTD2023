@@ -10,7 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r}
-datos <- function(ruta){
+get_data <- function(ruta){
 ###### cabecera digital ######
   ficheroCD <- paste0(ruta, "cabecera_FicheroDigital.DAT")
   cabecera_digital <- readBin(con = ficheroCD, what = "integer", n = 8, size = 1, signed = FALSE)
@@ -85,7 +85,7 @@ datos <- function(ruta){
   f2 <- file(ficheroCA, 'rb')
   Cabecera_A1 <- readBin(f2, "integer", n=7, size=1, signed=FALSE)
   Cabecera_A2 <- readBin(f2, "integer", n=3, size=2, signed=TRUE)
-  close(f1)
+  close(f2)
   
 ###### fichero analógico ######
   fichero <- paste0(ruta, 'ficheroAnalogico.DAT')
@@ -114,8 +114,9 @@ datos <- function(ruta){
 
 
 ruta <- "data/1059xlxveei79_ECGf2/27_09_2022/14.42.29_III_ECGyEXTyRESTO/"
-data <- datos(ruta)
+data <- get_data(ruta)
 
+#Añadir variables para almacenar los datos de forma mas accesible
 datos_digitales <- data[[1]][1]
 head(datos_digitales)
 ```
