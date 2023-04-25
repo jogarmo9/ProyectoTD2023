@@ -10,6 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r}
+library(tidyverse)
 get_data <- function(ruta){
 ###### cabecera digital ######
   ficheroCD <- paste0(ruta, "cabecera_FicheroDigital.DAT")
