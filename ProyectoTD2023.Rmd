@@ -82,8 +82,8 @@ get_data <- function(ruta){
   # Renombrar las columnas del data frame
   colnames(datos_digitales) <- c("HR1", "HR2", "MHR", "TOCO", "MSpO2", "VCP", "Psistolica", "Pdiastolica", "Pmedia")
   
-  # Crea la variable tiempo
-  tiempo <- seq(0, length.out = nrow(datos_digitales), by = 0.025)
+  # Crea la variable tiempo #by = 0.025
+  tiempo <- seq(0, length.out = nrow(datos_digitales), by = 1)
   # Selecciona las primeras 2604 filas de tiempo
   tiempo <- head(tiempo, nrow(datos_digitales))
   
@@ -160,8 +160,10 @@ cabecera_analogica2 <- unlist(data[[2]][3])
 ```{r}
 ###### Grafico fichero analogico ######
 
-#Representamos los ultimos 10 segundos de la señal
+#Obtenemos los datos de los 10 ultimos segundos de señal
 datos_analogicos10 <- subset(datos_analogicos, tiempo_analogico > max(tiempo_analogico)-10)
+
+#Representamos los ultimos 10 segundos de la señal atraves de un grafico interactivo
 g <- ggplot(datos_analogicos10, aes(tiempo_analogico, datos_analogicos, col="blue")) +
   geom_line() +
   labs(
@@ -170,5 +172,25 @@ g <- ggplot(datos_analogicos10, aes(tiempo_analogico, datos_analogicos, col="blu
     y = "data"
   )
 ggplotly(g)
+```
+
+
+
+```{r}
+###### Grafico fichero digital ######
+#seleccionamos los datos con tiempo menor a 1300
+datos_digitales300 <- subset(datos_digitales, tiempo <= 1300)
+
+#adaptamos los datos para poder representarlos
+datos_digitales300 <- gather(datos_digitales300, key = "variable", value = "valor", -tiempo)
+
+#representamos los datos
+ggplot(datos_digitales300, aes(x = tiempo, y = valor, color = variable)) +
+  geom_line() +
+  facet_wrap(~ variable, scales = "free") +
+  labs(
+    x = "Tiempo",
+    y = "Valor",
+  )
 ```
 
