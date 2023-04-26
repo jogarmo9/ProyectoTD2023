@@ -9,6 +9,24 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+
+```{r eval=T, include=F}
+# Especificamos las librerías necesarias en esta lista
+packages = c("knitr", "ggplot2","tidyr","dplyr","readr", "tidyverse")# use this function to check if each package is on the local machine
+# if a package is installed, it will be loaded
+# if any are not, the missing package(s) will be installed and loaded
+package.check <- lapply(packages, FUN = function(x) {
+  if (!require(x, character.only = TRUE)) {
+    install.packages(x, dependencies = TRUE,repos='http://cran.rediris.es')
+    library(x, character.only = TRUE)
+  }
+})
+# verify they are loaded
+search()
+```
+
+
+
 ```{r}
 library(tidyverse)
 get_data <- function(ruta){
@@ -112,8 +130,11 @@ get_data <- function(ruta){
   vectores <- list(cabecera_digital, Cabecera_A1, Cabecera_A2)
   return(list(dfs, vectores))
 }
+```
 
 
+
+```{r}
 ruta <- "data/1059xlxveei79_ECGf2/27_09_2022/14.42.29_III_ECGyEXTyRESTO/"
 data <- get_data(ruta)
 
@@ -127,7 +148,12 @@ tiempo_analogico <- as.data.frame(data[[1]][4])
 cabecera_D <- unlist(data[[2]][1])
 cabecera_A1 <- unlist(data[[2]][2])
 cabecera_A2 <- unlist(data[[2]][3])
+```
 
+
+
+```{r}
+###### Grafico fichero analogico ######
 
 ```
 
