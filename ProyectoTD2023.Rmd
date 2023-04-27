@@ -9,6 +9,24 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+
+```{r eval=T, include=F}
+# Especificamos las librerías necesarias en esta lista
+packages = c("knitr", "ggplot2","tidyr","dplyr","readr", "tidyverse", "plotly")# use this function to check if each package is on the local machine
+# if a package is installed, it will be loaded
+# if any are not, the missing package(s) will be installed and loaded
+package.check <- lapply(packages, FUN = function(x) {
+  if (!require(x, character.only = TRUE)) {
+    install.packages(x, dependencies = TRUE,repos='http://cran.rediris.es')
+    library(x, character.only = TRUE)
+  }
+})
+# verify they are loaded
+search()
+```
+
+
+
 ```{r}
 library(tidyverse)
 get_data <- function(ruta){
@@ -64,8 +82,8 @@ get_data <- function(ruta){
   # Renombrar las columnas del data frame
   colnames(datos_digitales) <- c("HR1", "HR2", "MHR", "TOCO", "MSpO2", "VCP", "Psistolica", "Pdiastolica", "Pmedia")
   
-  # Crea la variable tiempo
-  tiempo <- seq(0, length.out = nrow(datos_digitales), by = 0.025)
+  # Crea la variable tiempo #by = 0.025
+  tiempo <- seq(0, length.out = nrow(datos_digitales), by = 0.22)
   # Selecciona las primeras 2604 filas de tiempo
   tiempo <- head(tiempo, nrow(datos_digitales))
   
@@ -94,12 +112,11 @@ get_data <- function(ruta){
   datos_analogicos <- readBin(f2, "integer", n=20000000, size=2, signed=TRUE)
   close(f2)
   
-  # Calcular el vector de tiempo t
   Fm <- 1000
-  t <- seq(from = 0, to = (length(datos_analogicos)-1)/Fm, by = 1/Fm)
+  tiempo_analogico <- seq(from = 0, to = (length(datos_analogicos)-1)/Fm, by = 1/Fm)
   
   # Crear el data.frame de los datos
-  datos_analogicos <- data.frame(t, datos_analogicos)
+  datos_analogicos <- data.frame(tiempo_analogico, datos_analogicos)
   
   # Tiempo de registro
   hora <- ((length(datos_analogicos)/Fm)/60)/60
@@ -108,18 +125,74 @@ get_data <- function(ruta){
   
   tiempo_analogico <- cbind(hora, min, seg)
   
-  dfs <- list(datos_digitales, tiempo_digital,datos_analogicos, tiempo_analogico)
+  dfs <- list(datos_digitales, tiempo_digital, datos_analogicos, tiempo_analogico)
   vectores <- list(cabecera_digital, Cabecera_A1, Cabecera_A2)
   return(list(dfs, vectores))
 }
+```
 
 
+
+```{r}
 ruta <- "data/1059xlxveei79_ECGf2/27_09_2022/14.42.29_III_ECGyEXTyRESTO/"
 data <- get_data(ruta)
 
-#Añadir variables para almacenar los datos de forma mas accesible
-datos_digitales <- data[[1]][1]
-head(datos_digitales)
+##Añadir variables para almacenar los datos de forma mas accesible##
+
+#datos del fichero digital y total de tiempo de señal digital
+datos_digitales <- as.data.frame(data[[1]][1])
+tiempo_total_A <- as.data.frame(data[[1]][2])
+
+
+#datos del fichero analogico y total de tiempo de señal analogica
+datos_analogicos <- as.data.frame(data[[1]][3])
+tiempo_total_A <- as.data.frame(data[[1]][4])
+
+
+#datos de las cabeceras
+cabecera_digital <- unlist(data[[2]][1])
+cabecera_analogica1 <- unlist(data[[2]][2])
+cabecera_analogica2 <- unlist(data[[2]][3])
+```
+
+
+
+```{r}
+###### Grafico fichero analogico ######
+
+#Obtenemos los datos de los 10 ultimos segundos de señal
+datos_analogicos10 <- subset(datos_analogicos, tiempo_analogico > max(tiempo_analogico)-10)
+
+#Representamos los ultimos 10 segundos de la señal atraves de un grafico interactivo
+g <- ggplot(datos_analogicos10, aes(tiempo_analogico, datos_analogicos)) +
+  geom_line(aes(col="red")) +
+  labs(
+    title = "Fichero Analogico",
+    x = "time",
+    y = "data"
+  )
+ggplotly(g)
+```
+
+
+
+```{r}
+###### Grafico fichero digital ######
+#seleccionamos los datos con tiempo menor a 1300
+#2603
+datos_digitales300 <- subset(datos_digitales, tiempo <= 300)
+
+#adaptamos los datos para poder representarlos
+datos_digitales300 <- gather(datos_digitales300, key = "variable", value = "valor", -tiempo)
+
+#representamos los datos
+ggplot(datos_digitales300, aes(x = tiempo, y = valor, color = variable)) +
+  geom_line() +
+  facet_wrap(~ variable, scales = "free") +
+  labs(
+    x = "Tiempo",
+    y = "Valor",
+  )
 ```
 
 **Preguntas sobre la visualización de los datos y su utilidad:**
