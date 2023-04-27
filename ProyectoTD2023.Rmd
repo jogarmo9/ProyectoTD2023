@@ -129,6 +129,11 @@ head(datos_digitales)
     *Es necesario que los analistas de datos hagan un estudio comparando diferentes casos de parto de un monitor fetal para entender cómo se comportan los datos del monitor fetal en diferentes situaciones y para encontrar patrones y tendencias que puedan ser útiles para predecir y prevenir problemas de salud durante el parto. Al analizar una gran cantidad de datos de diferentes casos de parto, los analistas de datos pueden identificar patrones y tendencias que no serían visibles en un solo caso y desarrollar modelos predictivos para detectar signos tempranos de sufrimiento fetal o problemas de salud materna.*
 
 
+2. **¿Qué representa el HR1 y HR2 en la tabla de datos del monitor fetal?**
+  *El HR1 y HR2 en la tabla de datos del monitor fetal representan dos canales diferentes de la frecuencia cardíaca fetal. La medición de la frecuencia cardíaca fetal en dos canales diferentes proporciona una mayor precisión en la detección de cambios en la frecuencia cardíaca fetal y ayuda a los profesionales de la salud a tomar decisiones más informadas sobre el cuidado y tratamiento del feto y la madre durante el parto.*
+
+
+  
 
 
 
