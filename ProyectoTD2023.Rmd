@@ -129,3 +129,6 @@ head(datos_digitales)
     *Es necesario que los analistas de datos hagan un estudio comparando diferentes casos de parto de un monitor fetal para entender cómo se comportan los datos del monitor fetal en diferentes situaciones y para encontrar patrones y tendencias que puedan ser útiles para predecir y prevenir problemas de salud durante el parto. Al analizar una gran cantidad de datos de diferentes casos de parto, los analistas de datos pueden identificar patrones y tendencias que no serían visibles en un solo caso y desarrollar modelos predictivos para detectar signos tempranos de sufrimiento fetal o problemas de salud materna.*
 
 
+
+
+
