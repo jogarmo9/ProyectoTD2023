@@ -122,18 +122,12 @@ datos_digitales <- data[[1]][1]
 head(datos_digitales)
 ```
 
-**Preguntas sobre el la visualización de los datos y su utilidad:**
+**Preguntas sobre la visualización de los datos y su utilidad:**
 
-1.  **¿Por qué es necesario que analistas de datos hagan un estudio comparando diferentes casos de parto de un monitor fetal?**
+1.  **¿Por qué es necesario que analistas de datos hagan un estudio comparando diferentes casos de parto de un monitor fetal?** *Es necesario que los analistas de datos hagan un estudio comparando diferentes casos de parto de un monitor fetal para entender cómo se comportan los datos del monitor fetal en diferentes situaciones y para encontrar patrones y tendencias que puedan ser útiles para predecir y prevenir problemas de salud durante el parto. Al analizar una gran cantidad de datos de diferentes casos de parto, los analistas de datos pueden identificar patrones y tendencias que no serían visibles en un solo caso y desarrollar modelos predictivos para detectar signos tempranos de sufrimiento fetal o problemas de salud materna.*
 
-    *Es necesario que los analistas de datos hagan un estudio comparando diferentes casos de parto de un monitor fetal para entender cómo se comportan los datos del monitor fetal en diferentes situaciones y para encontrar patrones y tendencias que puedan ser útiles para predecir y prevenir problemas de salud durante el parto. Al analizar una gran cantidad de datos de diferentes casos de parto, los analistas de datos pueden identificar patrones y tendencias que no serían visibles en un solo caso y desarrollar modelos predictivos para detectar signos tempranos de sufrimiento fetal o problemas de salud materna.*
+2.  **¿Qué representa el HR1 y HR2 en la tabla de datos del monitor fetal?** *El HR1 y HR2 en la tabla de datos del monitor fetal representan dos canales diferentes de la frecuencia cardíaca fetal. La medición de la frecuencia cardíaca fetal en dos canales diferentes proporciona una mayor precisión en la detección de cambios en la frecuencia cardíaca fetal y ayuda a los profesionales de la salud a tomar decisiones más informadas sobre el cuidado y tratamiento del feto y la madre durante el parto.*
 
+3.  **¿Cuál es el papel del equipo médico en la interpretación de los datos del monitor fetal?** *El equipo médico es responsable de interpretar los datos del monitor fetal y tomar decisiones clínicas basadas en esa información para garantizar la salud y seguridad de la madre y el feto durante el parto.*
 
-2. **¿Qué representa el HR1 y HR2 en la tabla de datos del monitor fetal?**
-  *El HR1 y HR2 en la tabla de datos del monitor fetal representan dos canales diferentes de la frecuencia cardíaca fetal. La medición de la frecuencia cardíaca fetal en dos canales diferentes proporciona una mayor precisión en la detección de cambios en la frecuencia cardíaca fetal y ayuda a los profesionales de la salud a tomar decisiones más informadas sobre el cuidado y tratamiento del feto y la madre durante el parto.*
-
-
-  
-
-
-
+4.  **¿Qué técnicas de análisis de datos son comúnmente utilizadas en el análisis de un monitor fetal?** *Las técnicas de análisis de datos comúnmente utilizadas en el análisis de un monitor fetal incluyen el análisis de series de tiempo, la modelización estadística y el aprendizaje automático. El análisis de series de tiempo se utiliza para analizar las variaciones en los datos del monitor fetal a lo largo del tiempo. La modelización estadística se utiliza para construir modelos que expliquen la relación entre las variables del monitor fetal. El aprendizaje automático se utiliza para identificar patrones y tendencias en los datos del monitor fetal que puedan ser difíciles de detectar mediante otros métodos.*
