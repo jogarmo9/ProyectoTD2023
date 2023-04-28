@@ -1,6 +1,6 @@
 ---
 title: "ProyectoTD2023"
-author: "Jose Garcia Mora, Lucia Chulvi Deogracia"
+author: "Jose Garcia Mora, Lucia Chulvi Deogracia, David Camarena Sánchez"
 date: "`r Sys.Date()`"
 output: html_document
 ---
@@ -8,7 +8,6 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-
 
 ```{r eval=T, include=F}
 # Especificamos las librerías necesarias en esta lista
@@ -25,10 +24,9 @@ package.check <- lapply(packages, FUN = function(x) {
 search()
 ```
 
-
-
 ```{r}
 library(tidyverse)
+# La siguiente función nos permitirá obtener los datos de los diferentes ficheros , así como guardarlos en una lista. También calcularemos datos como la media, el número máximo, etc. Posteriormente hemos tenido en cuenta el fichero analógico. Además, también hemos tenido en cuenta el tipo de fichero a importar, ya que dependiendo del mismo se debe proceder con diferentes métodos.
 get_data <- function(ruta){
 ###### cabecera digital ######
   ficheroCD <- paste0(ruta, "cabecera_FicheroDigital.DAT")
@@ -38,6 +36,7 @@ get_data <- function(ruta){
   ficheroB <- paste0(ruta, "ficheroDigital.DAT")
   datos_digitales <- readBin(con = ficheroB, what = "integer", n = 2000000, size = 1, signed = FALSE)
   
+  # Almacenamiento de los datos de los diferentes ficheros:
   HR1 <- datos_digitales[seq(from = 1, to = length(datos_digitales), by = 9)]
   HR2 <- datos_digitales[seq(from = 2, to = length(datos_digitales), by = 9)]
   MHR <- datos_digitales[seq(from = 3, to = length(datos_digitales), by = 9)]
@@ -131,39 +130,35 @@ get_data <- function(ruta){
 }
 ```
 
-
-
 ```{r}
 ruta <- "data/1059xlxveei79_ECGf2/27_09_2022/14.42.29_III_ECGyEXTyRESTO/"
 data <- get_data(ruta)
 
 ##Añadir variables para almacenar los datos de forma mas accesible##
 
-#datos del fichero digital y total de tiempo de señal digital
+#Datos del fichero digital y total de tiempo de señal digital:
 datos_digitales <- as.data.frame(data[[1]][1])
 tiempo_total_A <- as.data.frame(data[[1]][2])
 
 
-#datos del fichero analogico y total de tiempo de señal analogica
+#Datos del fichero analogico y total de tiempo de señal analogica:
 datos_analogicos <- as.data.frame(data[[1]][3])
 tiempo_total_A <- as.data.frame(data[[1]][4])
 
 
-#datos de las cabeceras
+#Datos de las cabeceras:
 cabecera_digital <- unlist(data[[2]][1])
 cabecera_analogica1 <- unlist(data[[2]][2])
 cabecera_analogica2 <- unlist(data[[2]][3])
 ```
 
-
-
 ```{r}
-###### Grafico fichero analogico ######
+###### Gráfico fichero analógico ######
 
-#Obtenemos los datos de los 10 ultimos segundos de señal
+#Obtenemos los datos de los 10 últimos segundos de señal:
 datos_analogicos10 <- subset(datos_analogicos, tiempo_analogico > max(tiempo_analogico)-10)
 
-#Representamos los ultimos 10 segundos de la señal atraves de un grafico interactivo
+#Representamos los ultimos 10 segundos de la señal a través de un gráfico interactivo:
 g <- ggplot(datos_analogicos10, aes(tiempo_analogico, datos_analogicos)) +
   geom_line(aes(col="red")) +
   labs(
@@ -172,20 +167,21 @@ g <- ggplot(datos_analogicos10, aes(tiempo_analogico, datos_analogicos)) +
     y = "data"
   )
 ggplotly(g)
+
+# Si observamos los resultados podemos observar que la señal parece bastante estable, teniendo un intervalo de altos y bajos en forma de patrón.
 ```
-
-
 
 ```{r}
 ###### Grafico fichero digital ######
-#seleccionamos los datos con tiempo menor a 1300
+#Seleccionamos los datos con tiempo menor a 1300
 #2603
 datos_digitales300 <- subset(datos_digitales, tiempo <= 300)
 
-#adaptamos los datos para poder representarlos
+#Adaptamos los datos para poder representarlos:
 datos_digitales300 <- gather(datos_digitales300, key = "variable", value = "valor", -tiempo)
 
-#representamos los datos
+#Representamos los datos:
+# Con esta gráfica se pretende la observación de diversas variables en un intervalo de tiempo determinado, de forma que a simple vista se pueda realizar un estudio de los resultados:
 ggplot(datos_digitales300, aes(x = tiempo, y = valor, color = variable)) +
   geom_line() +
   facet_wrap(~ variable, scales = "free") +
