@@ -140,11 +140,33 @@ data <- get_data(ruta)
 datos_digitales <- as.data.frame(data[[1]][1])
 tiempo_total_A <- as.data.frame(data[[1]][2])
 
+# Observamos resumen de los datos:
+summary(datos_digitales)
+head(datos_digitales)
+tail(datos_digitales)
+
+mean(datos_digitales$tiempo)
+mean(datos_digitales$HR1)
+mean(datos_digitales$HR2)
+
+median(datos_digitales$tiempo)
+median(datos_digitales$HR1)
+median(datos_digitales$HR2)
 
 #Datos del fichero analogico y total de tiempo de señal analogica:
 datos_analogicos <- as.data.frame(data[[1]][3])
 tiempo_total_A <- as.data.frame(data[[1]][4])
 
+# Observamos resumen de los datos:
+summary(datos_analogicos)
+head(datos_analogicos)
+tail(datos_analogicos)
+
+mean(datos_analogicos$tiempo_analogico)
+mean(datos_analogicos$datos_analogicos)
+
+median(datos_analogicos$tiempo_analogico)
+median(datos_analogicos$datos_analogicos)
 
 #Datos de las cabeceras:
 cabecera_digital <- unlist(data[[2]][1])
