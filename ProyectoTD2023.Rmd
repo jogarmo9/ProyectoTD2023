@@ -2,12 +2,17 @@
 title: "ProyectoTD2023"
 author: "Jose Garcia Mora, Lucia Chulvi Deogracia, David Camarena Sánchez"
 date: "`r Sys.Date()`"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+## INTRODUCCIÓN 
+
+Primero, el código define una lista de paquetes necesarios, los carga si están disponibles o los instala y carga si no lo están. Luego, define una función llamada "get_data" que toma una ruta de archivo como entrada y devuelve un data frame que contiene los datos de los diferentes archivos. La función primero lee los datos de la cabecera digital y el archivo digital y los almacena en variables separadas. Luego, los datos se almacenan en una lista con cada variable de datos en una posición separada en la lista. Se calculan algunas estadísticas de los datos, como la media de una variable. Luego, la lista se procesa para que cada variable tenga el mismo número de filas. A continuación, se convierte la lista en un data frame y se agrega una variable de tiempo al data frame. El data frame resultante tiene una fila para cada unidad de tiempo y contiene los datos de las diferentes variables. Finalmente, se usa la biblioteca "tidyverse" para procesar y visualizar los datos.
 
 ```{r eval=T, include=F}
 # Especificamos las librerías necesarias en esta lista
