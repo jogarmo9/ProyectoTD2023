@@ -184,9 +184,9 @@ datos_analogicos10 <- subset(datos_analogicos, tiempo_analogico > max(tiempo_ana
 g <- ggplot(datos_analogicos10, aes(tiempo_analogico, datos_analogicos)) +
   geom_line(aes(col="red")) +
   labs(
-    title = "Fichero Analogico",
-    x = "time",
-    y = "data"
+    title = "Señal analógica",
+    x = "Tiempo",
+    y = "Señal"
   )
 ggplotly(g)
 
