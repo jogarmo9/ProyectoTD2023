@@ -1,10 +1,10 @@
 ---
 title: "ProyectoTD2023"
-author: "Jose Garcia Mora, Lucia Chulvi Deogracia, David Camarena Sánchez"
+author: "Jose Garcia Mora, Lucia Chulvi Deogracia, David Camarena Sánchez, Ruben Peña Sanchez"
 date: "`r Sys.Date()`"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -217,6 +217,55 @@ ggplot(datos_digitales300, aes(x = tiempo, y = valor, color = variable)) +
     y = "Valor",
   )
 ```
+```{r}
+#A partir de los datos anteriormente conseguidos vamos a comparar las variables HR1 y HR2 y comprobar si tienen correlación entre sí.
+
+#Escogemos  solamente las variables HR1 y HR2:
+datosHR1HR2<- datos_digitales300[datos_digitales300$variable %in% c("HR1","HR2"),]
+
+#Representamos la grafica con ambas Variables para ver si pueden tener correlacion entre si.
+
+ggplot(datosHR1HR2, aes(x = tiempo, y =valor, color =variable))+geom_line(size=0.8)+labs(x="Tiempo",y="Valor")
+
+#Para conseguir ver la correlacion que tienen los datos con la funcion cor() es imprescindible que los datos de los cuales queremos saber la correlacion esten en diferentes columnas por lo tanto utilizaremos la funcion pivot_wider
+
+datosHR1HR2pw<-pivot_wider(data = datosHR1HR2,names_from = variable,values_from=valor)
+
+#Vemos la correlacion que tienen entre si
+
+cor(datosHR1HR2pw$HR1,datosHR1HR2pw$HR2)
+
+#La correlacion es muy debil a pesar de que no lo parezca en la grafica, esto se debe a que en ambas variables encontramos datos anomalos. Eliminaremos estos datos,mirando la anterior grafica notamos que en ambas variables la mayoria de los datos se encuentran en el rango  [100,175],en cambio hay unos pocos valores que o bien son muy pequeños o son 0. Eliminaremos los datos que valgan menos de 50
+
+datosNoAnomalosHR12<- datosHR1HR2pw[datosHR1HR2pw$HR1>=50 & datosHR1HR2pw$HR2>=50,]
+
+#Vemos el rango comprobando que los datos tienen un rango similar
+range(datosNoAnomalosHR12$HR1)
+range(datosNoAnomalosHR12$HR2)
+
+#Utilizaremos la funcion pivot_longer para ver de nuevo la grafica esta vez sin datos anomalos 
+datosNoAnomalosPL<-pivot_longer(datosNoAnomalosHR12,cols=HR1:HR2,names_to = "variable",values_to="valor")
+
+#Creamos el grafico:
+ggplot(datosNoAnomalosPL, aes(x = tiempo, y =valor, color =variable))+geom_line(size=0.8)+labs(x="Tiempo",y="Valor")
+
+#Miramos si correlacion a aumentado
+cor(datosNoAnomalosHR12$HR1,datosNoAnomalosHR12$HR2)
+
+#Comprobamos que ahora que hemos eliminado los datos hay una muy buena  correlacion
+
+#Aprovechando que tenemos los datos limpios vamos a calcular la media y la mediana para HR1 y HR2
+mean(datosNoAnomalosHR12$HR1)
+mean(datosNoAnomalosHR12$HR2)
+median(datosNoAnomalosHR12$HR1)
+median(datosNoAnomalosHR12$HR2)
+
+#De nuevo podemos observar que hay mucha correlacion  puesto que la media es muy parecida y la mediana es 145 para ambas variables.
+
+
+```
+
+
 
 **Preguntas sobre la visualización de los datos y su utilidad:**
 
